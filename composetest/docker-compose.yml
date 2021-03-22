@@ -1,0 +1,37 @@
+version: "3.7"
+networks:
+  my-network:
+    driver: bridge
+
+services: 
+  nginx:
+    image: nginx:1.19
+    ports: 
+      - 8081:80
+    volumes: 
+      - ./site/:/var/www/myapp
+      - ./docker/nginx/:/etc/nginx/conf.d/
+    working_dir: /var/www/myapp    
+    networks: 
+      - my-network
+
+  php:
+    build:
+      context: ./docker/fpm
+      dockerfile: 7.Dockerfile
+    volumes: 
+      - ./site/:/var/www/myapp
+    container_name: Todolist1
+    working_dir: /var/www/myapp 
+    networks: 
+      - my-network
+  mariadb:
+    image: mariadb:10.3.28-focal
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: database
+    ports:
+      - "3306:3306"
+    networks:
+      - my-network
+
