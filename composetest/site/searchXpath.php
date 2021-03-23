@@ -14,7 +14,7 @@ try {
   }
   curl_close($curl);
   $resp = mb_convert_encoding($resp, 'HTML-ENTITIES', "UTF-8");
- 
+
   $dom = new DOMDocument();
   if (!@$dom->loadHtml($resp)) {
     throw new Exception('khong the load duoc HTML');
@@ -39,18 +39,17 @@ try {
       array_push($thumb, $xPathThumb[$index]->textContent);
     }
     $result = array_combine($title, $thumb);
+  } else {
+    throw new Exception('khong tim thay bai viet');
   }
   $array_respone = array(
     "success" => true,
     "status_code" => 200,
-    "data" => $result,
+    "data" => [$result, $getCategory],
     "message" => "success",
     "error" => "",
   );
-  
-  echo '<pre>';
-  print_r($title);
-  echo '</pre>';
   echo json_encode($array_respone);
 } catch (Exception $e) {
+  echo json_encode($e->getMessage());
 }

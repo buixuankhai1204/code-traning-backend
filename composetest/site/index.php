@@ -67,7 +67,7 @@ try {
     <ul>
       <?php foreach ($result as $index => $value) { ?>
         <li>
-          <a href=""><img src="<?php echo $value ?>" alt=""><?php echo $index ?></a>
+          <a class="title" href=""><img src="<?php echo $value ?>" alt=""><?php echo $index ?></a>
         </li>
       <?php } ?>
     </ul>
@@ -76,8 +76,9 @@ try {
       <button id="convert" class="button glyphicon glyphicon-search"></button>
       <input id="uid" name="titlePost" type="text" class="input">
     </div>
-    <div class="form-input">
-      <input id="guid" type="text" class="input" placeholder="" readonly />
+    <h1 class="title">
+    </h1>
+    <div class="class">
     </div>
   </div>
 
@@ -85,6 +86,8 @@ try {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
   $("#convert").click(function() {
+    var result1 = "";
+    var arrayTitle = [];
     var nameItem = $("#uid").val();
     var data = {
       nameItem: nameItem
@@ -93,11 +96,30 @@ try {
       type: "POST",
       url: "http://localhost:8081/searchXpath.php",
       data: data,
-      dataType: "text",
+      dataType: "json",
       success: function(result) {
         if (result['status_code'] == 200) {
-        
+          arrayTitle = Object.keys(result['data'][0]);
+          arrayThumb = Object.values(result['data'][0]);
+          for (i = 0; i < arrayTitle.length; i++) {
+          
+            console.log(arrayTitle[i]);
+            result1 += 
+            '<div class="listItem listItem-' + arrayTitle[i] + ' border">' +
+              '<div class="TitleToDo">' +
+              '<img src="' + arrayThumb[i] + '" class="demo">' +
+              '<p class="demo">' + arrayTitle[i] + '</p>' +
+              '</div>' + '</div>'
+            $(".class").html(result1);
+            $(".title").html(result['data'][1]);
+
+          }
+        } else {
+          $(".class").html(result);
+          $(".title").none();
+         
         }
+
       }
     });
   });
